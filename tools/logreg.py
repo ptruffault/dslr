@@ -1,8 +1,8 @@
 from .Stats import *
 import csv
+import matplotlib.pyplot as plt
 import numpy as np
-import math
-
+from tqdm import tqdm
 
 
 class LogReg(object):
@@ -14,9 +14,9 @@ class LogReg(object):
         self.iterations = 100 if iterations < 100 else iterations
         self.learning_rate = learning_rate
         self.bias = 0
-        self.learning_curve = []
+        self.learning_curve = {'accuracy': [], 'loss':[]}
         self.weights = np.random.normal(size=self.n)
-
+        self.x = X
         self.Y = Y
         self.X = [[] for i in range(0, self.size)]
         for i in range(0, self.n):
@@ -51,7 +51,7 @@ class LogReg(object):
         return np.round(self.model(X))
 
     # La moyenne des carrés des differances entre la prediction et le dataset d'entrainement
-    def cost(self, X=None):
+    def loss(self, X=None):
         if self.Y is None:
             return
         X = self.X if X is None else X
@@ -65,8 +65,7 @@ class LogReg(object):
         for i in range(0, self.size):
             if predictions[i] != self.Y[i]:
                 err += 1
-        #return 100 - (err / self.size * 100)
-        return err
+        return 100 - (err / self.size * 100)
 
     ##
     ## TRAIN
@@ -87,14 +86,41 @@ class LogReg(object):
         self.bias -= self.learning_rate * bias
 
 
+
     def train(self):
         if self.Y is None:
             return
-        for epoch in range(0, self.iterations):
+        fig, (axs) = plt.subplots(3)
+        for epoch in tqdm(range(self.iterations)):
             self.gradient_descent()
             if epoch % 2 == 0:
-                self.learning_rate -= self.learning_rate * (epoch + 1) / self.iterations
+                self.training_plot_animation(axs)
+        plt.close()
+        plt.show()
 
+
+    ##
+    ## PLOT ANIMATION
+    ##
+
+    def training_plot_animation(self, axs):
+        self.learning_curve['loss'].append(self.loss())
+        self.learning_curve['accuracy'].append(self.accuracy())
+
+        predictions = self.predict()
+        x1 = np.linspace(0, 1, 100)
+        x2 = (-self.weights[0] * x1 - self.bias) / self.weights[1]
+        axs[0].clear()
+        axs[0].plot(x1, x2, c='orange', lw=3)
+        axs[0].scatter(self.x[0], self.x[1], c=['green' if self.Y[i] == predictions[i] else 'red' for i in range(self.size)])
+        axs[0].set_title('Frontiére de désision')
+
+
+        axs[1].plot(self.learning_curve['loss'])
+        axs[1].set_title('Loss')
+        axs[2].plot(self.learning_curve['accuracy'])
+        axs[2].set_title('Accuracy')
+        plt.pause(0.001)
     ##
     ## CSV
     ##

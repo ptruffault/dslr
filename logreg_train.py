@@ -11,8 +11,6 @@ if __name__ == '__main__':
     train = {}
     houses_filters = {
         'Ravenclaw': [
-            #"Birthday",
-            #"Best Hand",
             "Arithmancy",
             "Astronomy",
             "Herbology",
@@ -28,8 +26,6 @@ if __name__ == '__main__':
             "Flying"
         ],
         'Slytherin': [
-            #"Birthday",
-            #"Best Hand",
             "Arithmancy",
             "Astronomy",
             "Herbology",
@@ -45,8 +41,6 @@ if __name__ == '__main__':
             "Flying"
         ],
         'Gryffindor': [
-            #"Birthday",
-            #"Best Hand",
             "Arithmancy",
             "Astronomy",
             "Herbology",
@@ -62,8 +56,6 @@ if __name__ == '__main__':
             "Flying"
         ],
         'Hufflepuff': [
-            #"Birthday",
-            #"Best Hand",
             "Arithmancy",
             "Astronomy",
             "Herbology",
@@ -80,13 +72,11 @@ if __name__ == '__main__':
         ]
     }
 
-    iteration = 250
-    learning_rate = 0.1
+    iteration = 1000
+    learning_rate = 0.001
     for house in set(data.houses):
         Y = [1 if house == h else 0 for h in data.houses]
         X = data.filter(houses_filters[house])
         LR = LogReg(X, Y, iteration, learning_rate)
         LR.train()
         LR.save('./models/'+house.lower()+'-model.csv')
-        err = LR.accuracy()
-        print(house, err, 100 - err / LR.size * 100)

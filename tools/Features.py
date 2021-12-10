@@ -30,15 +30,7 @@ class Features(object):
         ret = []
         for feature in collumns:
             if feature in self.data:
-                if feature == 'Best Hand':
-                    data = [1 if hand == 'Left' else 0 for hand in self.data['Best Hand']]
-                    print(mymean(data))
-                    exit()
-                    ret.append([1 if hand == 'Left' else 0 for hand in self.data['Best Hand']])
-                elif feature == 'Birthday':
-                    ret.append([datetime.strptime(date, "%Y-%m-%d").timestamp() for date in self.data['Birthday']])
-                else:
-                    ret.append(self.data[feature].to_numpy())
+                ret.append(self.data[feature].to_numpy())
         return self.complete_missing_value(ret)
 
 
