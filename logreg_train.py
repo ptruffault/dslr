@@ -1,6 +1,5 @@
 from tools.Features import Features
 from tools.logreg import LogReg
-import matplotlib.pyplot as plt
 import argparse
 
 if __name__ == '__main__':

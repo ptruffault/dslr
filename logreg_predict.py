@@ -1,8 +1,6 @@
 from tools.logreg import LogReg
 from tools.Features import Features
-import sys
 import csv
-import os
 import argparse
 
 if __name__ == '__main__':
